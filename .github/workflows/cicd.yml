@@ -4,7 +4,58 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  AZURE_RESOURCE_GROUP: "gh-personal-portfolio"
+  AZURE_STORAGE_ACCOUNT: "ghpersonalportfolio"
+  LOCATION: "West Europe"
+
 jobs:
+  setup-azure-resource:
+    name: Setup Azure Resource
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Create Resource Group
+        run: |
+          az group create \
+          --name ${{ env.AZURE_RESOURCE_GROUP }} \
+          --location "${{ env.LOCATION }}"
+
+      - name: Create Azure Storage Account
+        run: |
+          az storage account create \
+          --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+          --name ${{ env.AZURE_STORAGE_ACCOUNT }} \
+          --sku Standard_LRS
+
+      - name: Grant Blob Data Contributor permissions to the Service Principal
+        run: |
+          az role assignment create \
+          --assignee ${{ secrets.AZURE_CLIENT_ID }} \
+          --role "Storage Blob Data Contributor" \
+          --scope /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ env.AZURE_RESOURCE_GROUP }}/providers/Microsoft.Storage/storageAccounts/${{ env.AZURE_STORAGE_ACCOUNT }}
+
+      - name: Create Azure Storage Container for the current commit
+        run: |
+          az storage container create \
+          --account-name ${{ env.AZURE_STORAGE_ACCOUNT }} \
+          --name ${{ github.sha }} \
+          --public-access blob \
+          --auth-mode login
+
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -37,9 +88,61 @@ jobs:
       - name: Run linter
         run: npm run lint
 
+  unit-tests:
+    name: Unit Tests
+    needs: [setup-azure-resource]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm run test:ci
+
+      - name: Generate Job summary Tests coverage
+        run: |
+          COVERAGE_SUMMARY_PATH="./coverage/coverage-summary.json"
+          LINES_PCT=$(jq -r '.total.lines.pct' "$COVERAGE_SUMMARY_PATH")
+          STATEMENTS_PCT=$(jq -r '.total.statements.pct' "$COVERAGE_SUMMARY_PATH")
+          FUNCTIONS_PCT=$(jq -r '.total.functions.pct' "$COVERAGE_SUMMARY_PATH")
+          BRANCHES_PCT=$(jq -r '.total.branches.pct' "$COVERAGE_SUMMARY_PATH")
+
+          cat <<- EOM >> $GITHUB_STEP_SUMMARY
+            #### Coverage Summary:
+
+            | Metric     | Coverage |
+            |------------|----------|
+            | Lines      | $LINES_PCT%  |
+            | Statements | $STATEMENTS_PCT% |
+            | Functions  | $FUNCTIONS_PCT%  |
+            | Branches   | $BRANCHES_PCT%  |
+
+            [View Tests Coverage report](https://${{ env.AZURE_STORAGE_ACCOUNT }}.blob.core.windows.net/${{ github.sha }}/coverage/lcov-report/index.html)
+          EOM
+
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Upload current commit Jest coverage
+        run: |
+          az storage blob upload-batch \
+          --account-name ${{ env.AZURE_STORAGE_ACCOUNT }} \
+          --destination ${{ github.sha }} \
+          --destination-path coverage \
+          --source ./coverage \
+          --overwrite \
+          --auth-mode login
+
   deploy:
     name: Deploy
-    needs: [build, lint]
+    needs: [build, lint, unit-tests]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
