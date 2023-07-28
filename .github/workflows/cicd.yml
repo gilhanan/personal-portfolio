@@ -140,9 +140,66 @@ jobs:
           --overwrite \
           --auth-mode login
 
+  e2e-tests:
+    name: E2E Tests
+    needs: [setup-azure-resource, build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: nextjs-artifacts
+          path: .next/
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Browsers
+        run: npx playwright install --with-deps
+
+      - name: Run E2E tests
+        id: e2e_tests
+        run: |
+          echo "status=failed" >> $GITHUB_OUTPUT
+          xvfb-run npm run test:e2e
+          echo "status=success" >> $GITHUB_OUTPUT
+        continue-on-error: true
+
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Upload current commit E2E tests reports
+        run: |
+          az storage blob upload-batch \
+          --account-name ${{ env.AZURE_STORAGE_ACCOUNT }} \
+          --destination ${{ github.sha }} \
+          --destination-path playwright-report \
+          --source ./playwright-report \
+          --overwrite \
+          --auth-mode login
+
+      - name: Generate Job summary with E2E reports link
+        run: |
+          cat <<- EOM >> $GITHUB_STEP_SUMMARY
+            [View E2E Tests report](https://${{ env.AZURE_STORAGE_ACCOUNT }}.blob.core.windows.net/${{ github.sha }}/playwright-report/index.html)
+          EOM
+
+      - name: Check E2E test result
+        run: |
+          if [ "${{ steps.e2e_tests.outputs.status }}" == "failed" ]; then
+            exit 1
+          fi
+
   deploy:
     name: Deploy
-    needs: [build, lint, unit-tests]
+    needs: [build, lint, unit-tests, e2e-tests]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
