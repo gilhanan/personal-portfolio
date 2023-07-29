@@ -197,9 +197,31 @@ jobs:
             exit 1
           fi
 
+  lighthouse:
+    name: Lighthouse
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@v3
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: nextjs-artifacts
+          path: .next/
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Lighthouse CI
+        run: npm run lhci
+
   deploy:
     name: Deploy
-    needs: [build, lint, unit-tests, e2e-tests]
+    needs: [build, lint, unit-tests, e2e-tests, lighthouse]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
