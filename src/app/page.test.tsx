@@ -1,15 +1,22 @@
-import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
-import Home from "./page";
+import Home from "@app/page";
 
-// https://github.com/vercel/next.js/issues/53272
-jest.mock("next/image");
+const Banner = "Banner";
+const Projects = "Projects";
+
+jest.mock("./components/Banner", () => ({
+  Banner: () => <div data-testid={Banner}></div>,
+}));
+
+jest.mock("./components/Projects", () => ({
+  Projects: () => <div data-testid={Projects}></div>,
+}));
 
 describe("Home", () => {
-  it("renders a paragraph", () => {
+  it.each([Banner, Projects])("should render %s", (component) => {
     render(<Home />);
 
-    const paragraph = screen.getByText("Get started by editing");
-    expect(paragraph).toBeInTheDocument();
+    expect(screen.getByTestId(component)).toBeInTheDocument();
+    expect(screen.queryAllByTestId(component)).toHaveLength(1);
   });
 });
