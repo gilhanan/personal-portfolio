@@ -1,7 +1,11 @@
 module.exports = {
   ci: {
     collect: {
-      url: ["http://localhost:3000", "http://localhost:3000/projects"],
+      url: [
+        "http://localhost:3000",
+        "http://localhost:3000/projects",
+        "http://localhost:3000/about",
+      ],
       startServerCommand: "npm start",
     },
     asserts: {

@@ -7,7 +7,7 @@ export abstract class SharedPage {
     private readonly baseURL: string,
   ) {}
 
-  async goto(path: "" | "/projects" = ""): Promise<void> {
+  async goto(path: "" | "/projects" | "/about" = ""): Promise<void> {
     await this.page.goto(this.baseURL + path);
   }
 
