@@ -20,13 +20,17 @@
       }
     ],
     "paths": {
+      "@src/*": ["./src/*"],
       "@app/*": ["./src/app/*"],
+      "@api/*": ["./src/app/api/*"],
       "@contexts/*": ["./src/app/contexts/*"],
       "@data/*": ["./src/app/data/*"],
       "@scripts/*": ["./src/app/scripts/*"],
       "@components/*": ["./src/app/components/*"],
       "@shared/*": ["./src/app/shared/*"],
+      "@forms/*": ["./src/app/forms/*"],
       "@projects/*": ["./src/app/projects/*"],
+      "@contact/*": ["./src/app/contact/*"],
       "@images/*": ["./public/images/*"]
     }
   },

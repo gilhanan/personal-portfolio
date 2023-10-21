@@ -12,6 +12,11 @@ env:
   AZURE_RESOURCE_GROUP: "gh-personal-portfolio"
   AZURE_STORAGE_ACCOUNT: "ghpersonalportfolio"
   LOCATION: "West Europe"
+  RECAPTCHA_SITE_KEY: ${{ secrets.RECAPTCHA_SITE_KEY }}
+  RECAPTCHA_SECRET_KEY: ${{ secrets.RECAPTCHA_SECRET_KEY }}
+  SMTP_USER: ${{ secrets.SMTP_USER }}
+  SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+  SMTP_RECEIVER: ${{ secrets.SMTP_RECEIVER }}
 
 jobs:
   setup-azure-resource:
