@@ -1,26 +1,59 @@
 import Link from "next/link";
-import { FiCode } from "react-icons/fi";
+import { FiCode, FiShoppingBag } from "react-icons/fi";
 import { Project } from "@shared/models";
 import { ThemedImage } from "@components/ThemedImage";
 
+interface TileLinkProps {
+  url: string;
+  icon: React.ReactNode;
+  label: string;
+}
+
+function TileLink({ url, icon, label }: TileLinkProps): ReturnType<React.FC> {
+  return (
+    <Link
+      href={url}
+      target="_blank"
+      aria-label={label}
+      className="text-secondary block p-2 bg-primary-bg hover:bg-secondary-bg shadow-sm rounded-md"
+    >
+      {icon}
+    </Link>
+  );
+}
+
 export function ProjectTile({
+  id,
   title,
-  url,
   category,
+  url,
   repo,
   images: { light, dark },
 }: Project): ReturnType<React.FC> {
+  const tileLinks: TileLinkProps[] = [
+    {
+      url: repo,
+      icon: <FiCode />,
+      label: `View ${title} code`,
+    },
+    {
+      url,
+      icon: <FiShoppingBag />,
+      label: `View ${title} project`,
+    },
+  ];
+
   return (
     <div className="relative" data-testid="project-tile">
+      <div className="absolute z-10 top-2 right-2 flex flex-row gap-2">
+        {tileLinks.map(({ url, icon, label }) => (
+          <TileLink key={url} url={url} icon={icon} label={label} />
+        ))}
+      </div>
       <Link
-        href={repo}
-        target="_blank"
-        aria-label={`View ${title} code`}
-        className="absolute z-10 top-2 right-2 p-2 bg-primary-bg hover:bg-secondary-bg shadow-sm rounded-md"
+        href={`/projects/${id}`}
+        aria-label={`View ${title} project details`}
       >
-        <FiCode />
-      </Link>
-      <Link href={url} target="_blank" aria-label={`View ${title} ${category}`}>
         <div className="flex flex-col relative divide-y border rounded-xl shadow-md hover:shadow-xl">
           <ThemedImage
             lightSrc={light}

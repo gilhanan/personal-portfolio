@@ -9,7 +9,9 @@ export const categories = ["Chrome Extension"] as const;
 export type Category = (typeof categories)[number];
 
 export interface Project {
+  id: string;
   title: string;
+  description: JSX.Element;
   url: string;
   category: Category;
   repo: string;

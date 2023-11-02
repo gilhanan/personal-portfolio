@@ -21,15 +21,22 @@ export class Projects extends SharedPage {
     await super.goto(path);
   }
 
-  private getProjectTileLink({ name, category }: Project): Locator {
+  private getProjectDetailsTileLink({ name }: Project): Locator {
     return this.page.getByRole("link", {
-      name: `View ${name} ${category}`,
+      name: `View ${name} project details`,
     });
   }
 
-  private getProjectTileCodeLink(name: string): Locator {
+  private getProjectCodeTileLink({ name }: Project): Locator {
     return this.page.getByRole("link", {
       name: `View ${name} code`,
+    });
+  }
+
+  private getProjectTileLink({ name }: Project): Locator {
+    return this.page.getByRole("link", {
+      name: `View ${name} project`,
+      exact: true,
     });
   }
 
@@ -41,6 +48,20 @@ export class Projects extends SharedPage {
     await this.projectsCategoriesFilter.selectOption(category);
   }
 
+  async validateProjectTile(project: Project): Promise<void> {
+    await this.validateProjectDetailsTileLink(project);
+    await this.validateProjectTileLink(project);
+    await this.validateProjectCodeTileLink(project);
+  }
+
+  async validateProjectDetailsTileLink(project: Project): Promise<void> {
+    await expect(this.getProjectDetailsTileLink(project)).toBeVisible();
+  }
+
+  async clickOnProjectDetailsTileLink(project: Project): Promise<void> {
+    await this.getProjectDetailsTileLink(project).click();
+  }
+
   async validateProjectTileLink(project: Project): Promise<void> {
     await expect(this.getProjectTileLink(project)).toBeVisible();
   }
@@ -49,11 +70,11 @@ export class Projects extends SharedPage {
     await this.getProjectTileLink(project).click();
   }
 
-  async validateProjectTileCodeLink(name: string): Promise<void> {
-    await expect(this.getProjectTileCodeLink(name)).toBeVisible();
+  async validateProjectCodeTileLink(project: Project): Promise<void> {
+    await expect(this.getProjectCodeTileLink(project)).toBeVisible();
   }
 
-  async clickOnProjectTileCodeLink(name: string): Promise<void> {
-    await this.getProjectTileCodeLink(name).click();
+  async clickOnProjectCodeTileLink(project: Project): Promise<void> {
+    await this.getProjectCodeTileLink(project).click();
   }
 }

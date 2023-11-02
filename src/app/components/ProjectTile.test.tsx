@@ -3,6 +3,7 @@ import { Project } from "@shared/models";
 import { ProjectTile } from "@components/ProjectTile";
 
 const project: Project = {
+  id: "1",
   title: "Test Project",
   url: "https://testproject.com",
   category: "Chrome Extension",
@@ -11,6 +12,7 @@ const project: Project = {
     light: "/test/light.jpg",
     dark: "/test/dark.jpg",
   },
+  description: <>Test project description</>,
 };
 
 describe("ProjectTile", () => {
@@ -44,13 +46,21 @@ describe("ProjectTile", () => {
     ).toHaveAttribute("href", project.repo);
   });
 
-  it("should render project link", () => {
+  it("should render external project link", () => {
+    render(<ProjectTile {...project} />);
+
+    expect(
+      screen.getByRole("link", { name: `View ${project.title} project` }),
+    ).toHaveAttribute("href", project.url);
+  });
+
+  it("should render project details link", () => {
     render(<ProjectTile {...project} />);
 
     expect(
       screen.getByRole("link", {
-        name: `View ${project.title} ${project.category}`,
+        name: `View ${project.title} project details`,
       }),
-    ).toHaveAttribute("href", project.url);
+    ).toHaveAttribute("href", `/projects/${project.id}`);
   });
 });

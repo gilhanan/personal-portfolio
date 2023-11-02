@@ -6,6 +6,7 @@ import { Projects } from "@components/Projects";
 jest.mock("../data/projects", () => ({
   projects: [
     {
+      id: "1",
       title: "First project",
       category: "Chrome Extension",
       url: "https://www.example.com",
@@ -14,8 +15,10 @@ jest.mock("../data/projects", () => ({
         light: "/images/first-project-light.png",
         dark: "/images/first-project-dark.png",
       },
+      description: <>First project description</>,
     },
     {
+      id: "2",
       title: "Second project",
       category: "Chrome Extension",
       url: "https://www.example.com",
@@ -24,8 +27,10 @@ jest.mock("../data/projects", () => ({
         light: "/images/second-project-light.png",
         dark: "/images/second-project-dark.png",
       },
+      description: <>Second project description</>,
     },
     {
+      id: "3",
       title: "Third project",
       category: "Web Development" as Category,
       url: "https://www.example.com",
@@ -34,6 +39,7 @@ jest.mock("../data/projects", () => ({
         light: "/images/third-project-light.png",
         dark: "/images/third-project-dark.png",
       },
+      description: <>Third project description</>,
     },
   ] satisfies Project[],
 }));

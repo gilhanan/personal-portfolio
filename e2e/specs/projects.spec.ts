@@ -32,6 +32,7 @@ for (const { route, path } of paths) {
     test.describe("projects", () => {
       const projects = [
         {
+          id: "chat-gpt-rtl",
           name: "ChatGPT RTL",
           category: "Chrome Extension",
           url: "https://chrome.google.com/webstore/detail/chatgpt-rtl/nabcbpmmefiigmjpopfciegmlgihkofd",
@@ -40,31 +41,46 @@ for (const { route, path } of paths) {
       ] satisfies Project[];
 
       for (const project of projects) {
-        const { name, category, url, repo } = project;
+        const { name, category, id, url, repo } = project;
 
         test.describe(name, () => {
           test("can be rendered", async ({ projects }) => {
-            await projects.validateProjectTileLink(project);
-            await projects.validateProjectTileCodeLink(name);
+            await projects.validateProjectTile(project);
           });
 
           test("can be searched", async ({ projects }) => {
             await projects.searchForProject(name);
-            await projects.validateProjectTileLink(project);
+            await projects.validateProjectTile(project);
           });
 
           test("can be filtered", async ({ projects }) => {
             await projects.filterCateogry(category);
-            await projects.validateProjectTileLink(project);
+            await projects.validateProjectTile(project);
           });
 
           test("can be searched and filtered", async ({ projects }) => {
             await projects.searchForProject(name);
             await projects.filterCateogry(category);
-            await projects.validateProjectTileLink(project);
+            await projects.validateProjectTile(project);
           });
 
-          test("can view project page", async ({ context, projects }) => {
+          test("can view project details page", async ({
+            context,
+            projects,
+          }) => {
+            const responsePromise$ = context.waitForEvent(
+              "response",
+              (response) =>
+                response.url().includes(`/projects/${id}`) &&
+                response.status() === 200,
+            );
+
+            await projects.clickOnProjectDetailsTileLink(project);
+
+            await responsePromise$;
+          });
+
+          test("can view project", async ({ context, projects }) => {
             const responsePromise$ = context.waitForEvent(
               "response",
               (response) =>
@@ -86,7 +102,7 @@ for (const { route, path } of paths) {
                 response.url().includes(repo) && response.status() === 200,
             );
 
-            await projects.clickOnProjectTileCodeLink(name);
+            await projects.clickOnProjectCodeTileLink(project);
 
             await responsePromise$;
           });
