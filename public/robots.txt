@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://gil-hanan.com/sitemap.xml
