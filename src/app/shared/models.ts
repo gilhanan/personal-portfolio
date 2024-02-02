@@ -4,7 +4,7 @@ export interface SocialLink {
   ariaLabel: string;
 }
 
-export const categories = ["Chrome Extension"] as const;
+export const categories = ["Chrome Extension", "Web development"] as const;
 
 export type Category = (typeof categories)[number];
 
