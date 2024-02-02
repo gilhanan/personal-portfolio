@@ -12,7 +12,7 @@ export const projects: Project[] = [
     title: "ChatGPT RTL",
     url: "https://chrome.google.com/webstore/detail/chatgpt-rtl/nabcbpmmefiigmjpopfciegmlgihkofd",
     category: "Chrome Extension",
-    repo: "https://github.com/gilhanan/chat-gpt-rtl",
+    repo: "https://github.com/gilhanan/rtl-extensions/tree/main/extensions/chatgpt",
     images: {
       light: chatGptRtlLight,
       dark: chatGptRtlDark,
@@ -81,7 +81,7 @@ export const projects: Project[] = [
     title: "Claude RTL",
     url: "https://chrome.google.com/webstore/detail/claude-rtl/bogboalkhfnponhdoflinneddblhdfma",
     category: "Chrome Extension",
-    repo: "https://github.com/gilhanan/claude-rtl",
+    repo: "https://github.com/gilhanan/rtl-extensions/tree/main/extensions/claude",
     images: {
       light: claudeRtlLight,
       dark: claudeRtlDark,

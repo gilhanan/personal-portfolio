@@ -36,7 +36,7 @@ for (const { route, path } of paths) {
           name: "ChatGPT RTL",
           category: "Chrome Extension",
           url: "https://chrome.google.com/webstore/detail/chatgpt-rtl/nabcbpmmefiigmjpopfciegmlgihkofd",
-          repo: "https://github.com/gilhanan/chat-gpt-rtl",
+          repo: "https://github.com/gilhanan/rtl-extensions/tree/main/extensions/chatgpt",
         },
       ] satisfies Project[];
 
