@@ -5,8 +5,6 @@ describe("ButtonLink", () => {
   const props: ButtonLinkProps = {
     url: "https://example.com",
     text: "Example Text",
-    lightSrc: "light-image.png",
-    darkSrc: "dark-image.png",
   };
 
   it("should render the link", () => {
@@ -21,17 +19,12 @@ describe("ButtonLink", () => {
     expect(screen.getByText(props.text)).toBeInTheDocument();
   });
 
-  it("should render a ThemedImage component with the provided props", () => {
-    render(<ButtonLink {...props} />);
-    expect(
-      screen.getByRole("img", {
-        name: `${props.text} (dark)`,
-      }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("img", {
-        name: `${props.text} (light)`,
-      }),
-    ).toBeInTheDocument();
+  it("should render a child component", () => {
+    render(
+      <ButtonLink {...props}>
+        <div data-testid="child-component" />
+      </ButtonLink>,
+    );
+    expect(screen.getByTestId("child-component")).toBeInTheDocument();
   });
 });

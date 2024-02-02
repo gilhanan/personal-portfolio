@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { FiCode, FiShoppingBag } from "react-icons/fi";
-import { Project } from "@shared/models";
+import { FiCode, FiGlobe, FiShoppingBag } from "react-icons/fi";
+import { Category, Project } from "@shared/models";
 import { ThemedImage } from "@components/ThemedImage";
 
 interface TileLinkProps {
@@ -22,6 +22,11 @@ function TileLink({ url, icon, label }: TileLinkProps): ReturnType<React.FC> {
   );
 }
 
+const categoryToTileLinkIcon: Record<Category, React.ReactNode> = {
+  "Chrome Extension": <FiShoppingBag />,
+  "Web development": <FiGlobe />,
+};
+
 export function ProjectTile({
   id,
   title,
@@ -38,7 +43,7 @@ export function ProjectTile({
     },
     {
       url,
-      icon: <FiShoppingBag />,
+      icon: categoryToTileLinkIcon[category],
       label: `View ${title} project`,
     },
   ];

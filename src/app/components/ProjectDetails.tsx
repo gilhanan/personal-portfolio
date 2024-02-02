@@ -1,10 +1,10 @@
 import { FiTag } from "react-icons/fi";
-import chromeWebStore from "@images/chrome-web-store.svg";
 import githubLight from "@images/github.svg";
 import githubDark from "@images/github-dark.svg";
 import { Project } from "@shared/models";
 import { ThemedImage } from "@components/ThemedImage";
 import { ButtonLink } from "@components/ButtonLink";
+import { ProjectDetailsButtonLink } from "@components/ProjectDetailsButtonLink";
 
 interface ProjectDetailsProps {
   project: Project;
@@ -23,7 +23,7 @@ export function ProjectDetails({
   return (
     <section className="mt-12 sm:mt-6">
       <div className="flex sm:flex-row flex-col gap-8">
-        <div className="w-full sm:w-80 flex flex-col gap-8">
+        <div className="w-full sm:max-w-[300px] flex flex-col gap-8">
           <ThemedImage
             lightSrc={light}
             darkSrc={dark}
@@ -38,18 +38,15 @@ export function ProjectDetails({
           <div>
             <h2 className="text-primary">Links</h2>
             <div className="flex flex-col gap-2">
-              <ButtonLink
-                url={url}
-                text="Get extension"
-                lightSrc={chromeWebStore}
-                darkSrc={chromeWebStore}
-              />
-              <ButtonLink
-                url={repo}
-                text="Source code"
-                lightSrc={githubLight}
-                darkSrc={githubDark}
-              />
+              <ProjectDetailsButtonLink category={category} url={url} />
+              <ButtonLink url={repo} text="Source code">
+                <ThemedImage
+                  lightSrc={githubLight}
+                  darkSrc={githubDark}
+                  className="w-full h-full"
+                  alt="Source code"
+                />
+              </ButtonLink>
             </div>
           </div>
         </div>
