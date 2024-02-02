@@ -10,7 +10,7 @@ export const projects: Project[] = [
   {
     id: "chat-gpt-rtl",
     title: "ChatGPT RTL",
-    url: "https://chrome.google.com/webstore/detail/chatgpt-rtl/nabcbpmmefiigmjpopfciegmlgihkofd",
+    url: "https://chromewebstore.google.com/detail/chatgpt-rtl/nabcbpmmefiigmjpopfciegmlgihkofd",
     category: "Chrome Extension",
     repo: "https://github.com/gilhanan/rtl-extensions/tree/main/extensions/chatgpt",
     images: {
@@ -79,7 +79,7 @@ export const projects: Project[] = [
   {
     id: "claude-rtl",
     title: "Claude RTL",
-    url: "https://chrome.google.com/webstore/detail/claude-rtl/bogboalkhfnponhdoflinneddblhdfma",
+    url: "https://chromewebstore.google.com/detail/claude-rtl/bogboalkhfnponhdoflinneddblhdfma",
     category: "Chrome Extension",
     repo: "https://github.com/gilhanan/rtl-extensions/tree/main/extensions/claude",
     images: {

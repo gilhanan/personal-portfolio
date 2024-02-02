@@ -35,7 +35,7 @@ for (const { route, path } of paths) {
           id: "chat-gpt-rtl",
           name: "ChatGPT RTL",
           category: "Chrome Extension",
-          url: "https://chrome.google.com/webstore/detail/chatgpt-rtl/nabcbpmmefiigmjpopfciegmlgihkofd",
+          url: "https://chromewebstore.google.com/detail/chatgpt-rtl/nabcbpmmefiigmjpopfciegmlgihkofd",
           repo: "https://github.com/gilhanan/rtl-extensions/tree/main/extensions/chatgpt",
         },
       ] satisfies Project[];
@@ -84,7 +84,8 @@ for (const { route, path } of paths) {
             const responsePromise$ = context.waitForEvent(
               "response",
               (response) =>
-                response.url().includes(url) && response.status() === 200,
+                response.url().includes(url.split("/").slice(-2).join("/")) &&
+                response.status() === 200,
             );
 
             await projects.clickOnProjectTileLink(project);
