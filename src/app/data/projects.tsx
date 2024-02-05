@@ -148,7 +148,7 @@ export const projects: Project[] = [
   {
     id: "lhci-azure",
     title: "Lighthouse CI on Azure",
-    url: "https://gh-lhci-azure-lhci-server.agreeablebay-71c2bcb8.northeurope.azurecontainerapps.io/app/projects/gh-lhci-azure",
+    url: "https://lhci-azure.gil-hanan.com/app/projects/gh-lhci-azure/app/projects/gh-lhci-azure",
     category: "Web development",
     repo: "https://github.com/gilhanan/lhci-azure",
     images: {
